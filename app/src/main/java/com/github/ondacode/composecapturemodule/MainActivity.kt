@@ -34,12 +34,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeCaptureModuleProyectTheme {
+                //Obtiene el contexto local actual
                 val context = LocalContext.current
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    //Declara  2 variables mutables para recuperar el width y height de tu composable
                     val composableWidth = remember {
                         mutableStateOf(0)
                     }
@@ -50,21 +51,32 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-
+//Encierra tu composable en una lamda
                         val composableContent: @Composable () -> Unit = {
+                            //Modifica tu composable para que retorne el widht y height en una lamda
                             CatInfo { width: Int, heigth: Int ->
                                 composableWidth.value = width
                                 composableHeight.value = heigth
                             }
                         }
+                        //Para actualizar el tamaño de tu composable tienes que invocarlo
                         composableContent.invoke()
+
+                        //Valida que tu composable te retorne un width y un height
                         if (composableWidth.value > 0 && composableHeight.value > 0) {
-                            val intSize =
-                                IntSize(width = composableWidth.value, height = composableHeight.value)
+                            //Crea una instancia de IntSize con el tamaño de tu composable
+                            val intSize = IntSize(
+                                width = composableWidth.value,
+                                height = composableHeight.value
+                            )
+                            //Crea una instancia del modelo OCComposeCaptureModel
                             val ocComposeCaptureModel = OCComposeCaptureModel(
                                 composableContent = composableContent,
                                 intSize = intSize
-                            ) { resposeBitmap ->
+                            ) {  //Aqui recuperas el bitmap de composable
+                                    resposeBitmap ->
+
+                                //Opcional guardas el bitmap como una imagen con extension png
                                 val file = File(context.filesDir, "screenshot1.png")
                                 FileOutputStream(file).use { outputStream ->
                                     resposeBitmap?.compress(
@@ -74,6 +86,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                             }
+                            //LLamas el composable OCComposeCapture agregando los datos del modelo OCComposeCaptureModel
                             OCComposeCapture(ocComposeCaptureModel = ocComposeCaptureModel)
                         }
                     }
@@ -98,6 +111,7 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
 @Composable
 fun CatInfo(size: (width: Int, height: Int) -> Unit) {
     val localDensity = LocalDensity.current
@@ -106,6 +120,7 @@ fun CatInfo(size: (width: Int, height: Int) -> Unit) {
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .onGloballyPositioned { layoutCoordinates ->
+                //Obtenen el width y height de tu composable
                 val heightInPixels =
                     with(localDensity) {
                         layoutCoordinates.size.height
@@ -120,6 +135,7 @@ fun CatInfo(size: (width: Int, height: Int) -> Unit) {
                             .toPx()
                             .roundToInt()
                     }
+                //Retorna los valores width y height de tu composable en una lamda
                 size(widthInPixels, heightInPixels)
             }) {
 
