@@ -76,7 +76,7 @@ afterEvaluate {
             release(MavenPublication) {
                 groupId = 'com.github.ondacode.composecapturemodule'
                 artifactId = 'OCComposeCapture'
-                version = '1.0.6'
+                version = '1.0.7'
             }
         }
     }
