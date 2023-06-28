@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'maven-publish'
 }
-
+apply plugin: 'maven-publish'
 android {
     namespace 'com.github.ondacode.composecapturemodule'
     compileSdk 33
@@ -69,4 +69,15 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
+}
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'com.github.ondacode.composecapturemodule'
+                artifactId = 'OCComposeCapture'
+                version = '1.0.6'
+            }
+        }
+    }
 }
